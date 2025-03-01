@@ -1,0 +1,246 @@
+{
+  "info": {
+    "name": "Social Media Automation",
+    "description": "API collection for the Social Media Automation platform",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "description": "Authentication and authorization endpoints",
+      "item": [
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "login"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"user@example.com\",\n  \"password\": \"your-password\"\n}"
+            },
+            "description": "Authenticate user and get access token"
+          }
+        },
+        {
+          "name": "Register",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "register"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"user@example.com\",\n  \"password\": \"your-password\",\n  \"name\": \"John Doe\"\n}"
+            },
+            "description": "Register a new user"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Social Accounts",
+      "description": "Social media account management endpoints",
+      "item": [
+        {
+          "name": "List Accounts",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/accounts",
+              "host": ["{{baseUrl}}"],
+              "path": ["accounts"]
+            },
+            "description": "Get all social media accounts for the authenticated user"
+          }
+        },
+        {
+          "name": "Add Twitter Account",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/accounts/twitter",
+              "host": ["{{baseUrl}}"],
+              "path": ["accounts", "twitter"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"My Twitter Account\",\n  \"description\": \"Main professional account\",\n  \"goals\": [\"Increase engagement\", \"Share tech insights\"],\n  \"interests\": [\"Technology\", \"Software Development\", \"DevOps\"]\n}"
+            },
+            "description": "Add a new Twitter account configuration"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Content",
+      "description": "Content management endpoints",
+      "item": [
+        {
+          "name": "Generate Content",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/content/generate",
+              "host": ["{{baseUrl}}"],
+              "path": ["content", "generate"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"accountId\": \"account-uuid\",\n  \"contentType\": \"tweet\",\n  \"topic\": \"DevOps best practices\",\n  \"tone\": \"professional\",\n  \"length\": \"short\"\n}"
+            },
+            "description": "Generate content using AI for a specific account"
+          }
+        },
+        {
+          "name": "List Content",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/content?status=pending&page=1&limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["content"],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "pending"
+                },
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            },
+            "description": "List all content with optional filters"
+          }
+        },
+        {
+          "name": "Approve Content",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/content/:contentId/approve",
+              "host": ["{{baseUrl}}"],
+              "path": ["content", ":contentId", "approve"],
+              "variable": [
+                {
+                  "key": "contentId",
+                  "value": "content-uuid"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"scheduledFor\": \"2024-03-01T12:00:00Z\",\n  \"modifications\": \"Optional content modifications\"\n}"
+            },
+            "description": "Approve and optionally schedule content for posting"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Schedule",
+      "description": "Content scheduling endpoints",
+      "item": [
+        {
+          "name": "List Scheduled Content",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/schedule?from=2024-03-01&to=2024-03-31",
+              "host": ["{{baseUrl}}"],
+              "path": ["schedule"],
+              "query": [
+                {
+                  "key": "from",
+                  "value": "2024-03-01"
+                },
+                {
+                  "key": "to",
+                  "value": "2024-03-31"
+                }
+              ]
+            },
+            "description": "Get all scheduled content within a date range"
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000/api/v1",
+      "type": "string"
+    }
+  ]
+}
