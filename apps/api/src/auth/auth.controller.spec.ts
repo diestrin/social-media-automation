@@ -6,6 +6,7 @@ import {
   createMockAuthResponse,
   createLoginDto,
 } from '../../test/factories/user.factory';
+import { Response } from 'express';
 
 describe('AuthController', () => {
   let controller: AuthController;
@@ -41,14 +42,23 @@ describe('AuthController', () => {
       const mockAuthResponse = createMockAuthResponse(mockUser);
       const loginDto = createLoginDto();
       const req = { user: mockUser };
+      const mockResponse = {
+        cookie: jest.fn(),
+      } as unknown as Response;
+
       jest.spyOn(authService, 'login').mockResolvedValue(mockAuthResponse);
 
       // Act
-      const result = await controller.login(req, loginDto);
+      const result = await controller.login(req, loginDto, mockResponse);
 
       // Assert
       expect(result).toEqual(mockAuthResponse);
       expect(authService.login).toHaveBeenCalledWith(mockUser);
+      expect(mockResponse.cookie).toHaveBeenCalledWith(
+        'auth_token',
+        mockAuthResponse.access_token,
+        expect.any(Object),
+      );
     });
   });
 
@@ -62,10 +72,14 @@ describe('AuthController', () => {
         password: 'password123',
         name: 'Test User',
       };
+      const mockResponse = {
+        cookie: jest.fn(),
+      } as unknown as Response;
+
       jest.spyOn(authService, 'register').mockResolvedValue(mockAuthResponse);
 
       // Act
-      const result = await controller.register(registerDto);
+      const result = await controller.register(registerDto, mockResponse);
 
       // Assert
       expect(result).toEqual(mockAuthResponse);
@@ -74,6 +88,27 @@ describe('AuthController', () => {
         registerDto.password,
         registerDto.name,
       );
+      expect(mockResponse.cookie).toHaveBeenCalledWith(
+        'auth_token',
+        mockAuthResponse.access_token,
+        expect.any(Object),
+      );
+    });
+  });
+
+  describe('logout', () => {
+    it('should clear the auth_token cookie', async () => {
+      // Arrange
+      const mockResponse = {
+        clearCookie: jest.fn(),
+      } as unknown as Response;
+
+      // Act
+      const result = await controller.logout(mockResponse);
+
+      // Assert
+      expect(result).toEqual({ message: 'Logged out successfully' });
+      expect(mockResponse.clearCookie).toHaveBeenCalledWith('auth_token');
     });
   });
 });

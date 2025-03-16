@@ -28,10 +28,10 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 
   async validate(payload: any) {
     // Check if the payload has the expected structure
-    if (!payload.sub || !payload.email) {
+    if (!(payload.sub || payload.id) || !payload.email) {
       throw new UnauthorizedException('Invalid token payload');
     }
 
-    return { id: payload.sub, email: payload.email };
+    return { id: payload.sub || payload.id, email: payload.email };
   }
 }

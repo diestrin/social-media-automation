@@ -42,8 +42,8 @@ export const cleanupDatabase = async (
       await prisma.user.deleteMany({
         where: { email: options.email },
       });
-      return;
     }
+    return;
   }
 
   // Otherwise, perform a general cleanup (use with caution in parallel tests)
