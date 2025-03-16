@@ -8,12 +8,55 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(uuid())
-  email     String   @unique
+  id        String    @id @default(uuid())
+  email     String    @unique
   name      String
   password  String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  // Relations
+  accounts Account[]
 
   @@map("users")
+}
+
+enum AccountType {
+  TWITTER
+  LINKEDIN
+  FACEBOOK
+  INSTAGRAM
+}
+
+model Account {
+  id          String      @id @default(uuid())
+  type        AccountType
+  name        String
+  description String?
+  goals       String[]
+  interests   String[]
+  
+  // Account Credentials (encrypted in application layer)
+  credentials Json
+
+  // Account Status
+  isActive    Boolean   @default(true)
+  lastSyncAt  DateTime?
+
+  // Metadata
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  // Relations
+  userId      String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Content and Schedule settings
+  postFrequency      Int       @default(3) // posts per day
+  bestTimeToPost     String[]  // array of preferred posting times
+  contentPreferences Json      @default("{}")
+
+  @@map("accounts")
+  @@index([userId])
+  @@index([type])
 } 

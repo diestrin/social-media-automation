@@ -1,0 +1,5 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+# Run linting and unit tests before commit
+cd apps/api && npm run lint && npm run test 

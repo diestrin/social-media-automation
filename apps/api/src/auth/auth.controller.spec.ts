@@ -1,31 +1,26 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
+import {
+  createMockUserWithoutPassword,
+  createMockAuthResponse,
+  createLoginDto,
+} from '../../test/factories/user.factory';
 
 describe('AuthController', () => {
   let controller: AuthController;
   let authService: AuthService;
 
-  const mockUser = {
-    id: 'user-123',
-    email: 'test@example.com',
-    name: 'Test User',
-  };
-
-  const mockAuthResponse = {
-    access_token: 'test-token',
-    user: mockUser,
-  };
-
   beforeEach(async () => {
+    // Follow AAA pattern - Arrange
     const module: TestingModule = await Test.createTestingModule({
       controllers: [AuthController],
       providers: [
         {
           provide: AuthService,
           useValue: {
-            login: jest.fn().mockResolvedValue(mockAuthResponse),
-            register: jest.fn().mockResolvedValue(mockAuthResponse),
+            login: jest.fn(),
+            register: jest.fn(),
           },
         },
       ],
@@ -41,11 +36,17 @@ describe('AuthController', () => {
 
   describe('login', () => {
     it('should return access token and user data', async () => {
-      const loginDto = { email: 'test@example.com', password: 'password123' };
+      // Arrange
+      const mockUser = createMockUserWithoutPassword();
+      const mockAuthResponse = createMockAuthResponse(mockUser);
+      const loginDto = createLoginDto();
       const req = { user: mockUser };
+      jest.spyOn(authService, 'login').mockResolvedValue(mockAuthResponse);
 
+      // Act
       const result = await controller.login(req, loginDto);
 
+      // Assert
       expect(result).toEqual(mockAuthResponse);
       expect(authService.login).toHaveBeenCalledWith(mockUser);
     });
@@ -53,14 +54,20 @@ describe('AuthController', () => {
 
   describe('register', () => {
     it('should create a new user and return access token', async () => {
+      // Arrange
+      const mockUser = createMockUserWithoutPassword();
+      const mockAuthResponse = createMockAuthResponse(mockUser);
       const registerDto = {
         email: 'test@example.com',
         password: 'password123',
         name: 'Test User',
       };
+      jest.spyOn(authService, 'register').mockResolvedValue(mockAuthResponse);
 
+      // Act
       const result = await controller.register(registerDto);
 
+      // Assert
       expect(result).toEqual(mockAuthResponse);
       expect(authService.register).toHaveBeenCalledWith(
         registerDto.email,
