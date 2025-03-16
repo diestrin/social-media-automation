@@ -9,7 +9,7 @@ import { createTestApp, cleanupDatabase } from './helpers/test-utils';
 describe('AuthController (e2e)', () => {
   let app: INestApplication;
   let prisma: PrismaService;
-  let uniqueId = Math.random().toString(36).substring(2, 15);
+  const uniqueId = Math.random().toString(36).substring(2, 15);
 
   beforeAll(async () => {
     // Setup test environment

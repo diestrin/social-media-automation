@@ -10,7 +10,7 @@
     "api:dev": "yarn workspace api start:dev",
     "web:dev": "yarn workspace web start:dev",
     "format": "prettier --write \"**/*.{ts,tsx,md,json}\"",
-    "lint": "eslint \"**/*.{ts,tsx}\"",
+    "lint": "yarn workspace api lint",
     "test": "jest"
   },
   "devDependencies": {
